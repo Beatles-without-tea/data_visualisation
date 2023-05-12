@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Paris Airbnb Prices Map</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+  <div id="map-container"></div>
+  <script>
+    // Set the dimensions of the SVG container
+    var width = 800,
+        height = 600;
+
+    // 1. Acquire the necessary data
+    d3.json("data/neighbourhoods.geojson").then(function(neighborhoods) {
+      d3.csv("neighbourhood_price.csv").then(function(prices) {
+
+        // 2. Choose a suitable map projection
+        var projection = d3.geoMercator().fitSize([width, height], neighborhoods);
+
+        // 3. Create an SVG container
+        var svg = d3.select("#map-container").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        svg.append("svg:image")
+        .attr("xlink:href", "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png")
+        .attr("width", width)
+        .attr("height", height);
+
+        // 4. Load the data
+        var priceByNeighborhood = {};
+        prices.forEach(function(d) {
+          priceByNeighborhood[d.neighbourhood] = +d.price;
+        });
+        
+
+        // 5. Create a color scale
+        var colorScale = d3.scaleLinear()
+            .domain(d3.extent(prices, function(d) { return +d.price; }))
+            .range(["white", "red"]);
+
+        
+        // 6. Draw the map
+        var neighborhoodsGroup = svg.append("g")
+            .selectAll("path")
+            .data(neighborhoods.features)
+            .enter()
+            .append("path")
+            .attr("d", d3.geoPath().projection(projection));
+        
+
+
+        // 7. Color the neighborhoods
+        neighborhoodsGroup.style("fill", function(d) {
+          var price = priceByNeighborhood[d.properties.neighbourhood];
+          
+          return colorScale(price);
+        });
+
+        // 8. Add interactivity
+        var tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("display", "none");
+        
+        neighborhoodsGroup.on("mouseover", function(d) {
+          var price = priceByNeighborhood[d.properties.neighbourhood];
+          console.log(price)
+          tooltip.text(d.properties.neighbourhood + ": $" + price);
+
+          tooltip.style("display", "block");
+        })
+        .on("mousemove", function(d) {
+          tooltip.style("top", (d3.event.pageY-10)+"px")
+                 .style("left",(d3.event.pageX+10)+"px");
+        })
+        .on("mouseout", function(d) {
+          tooltip.style("display", "none");
+        });
+
+      });
+    });
+
+  </script>
+  <style>
+    .tooltip {
+      position: absolute;
+      padding: 10px;
+      font-size: 12px;
+      background-color: white;
+      border: 1px solid black;
+      pointer-events: none;
+    }
+  </style>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Animated Visualisations</title>
+    <style>
+      /* Add any CSS styling here */
+    </style>
+  </head>
+  <body>
+    <div id="viz1"></div>
+    <button id="nextButton" onclick="scrollToNext()">Next</button>
+    <div id="viz2"></div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+      // Load the data
+      d3.csv("mydata.csv").then(function(data) {
+
+        // Create the first visualisation
+        // using data and D3.js animation
+        var viz1 = d3.select("#viz1");
+        // Add code to create visualisation here
+
+        // Create the second visualisation
+        // using data and D3.js animation
+        var viz2 = d3.select("#viz2");
+        // Add code to create visualisation here
+
+      });
+
+      // Add function to scroll to next section of page
+      function scrollToNext() {
+        var nextSection = document.getElementById("viz2");
+        nextSection.scrollIntoView({ behavior: "smooth" });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Price Trends Over Time by Neighborhood</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+  </head>
+  <body>
+    <div id="chart"></div>
+    <script>
+      // Set the dimensions and margins of the chart
+      var margin = {top: 20, right: 30, bottom: 30, left: 50},
+          width = 960 - margin.left - margin.right,
+          height = 500 - margin.top - margin.bottom;
+          
+      // Set the colors for each neighborhood
+      var colors = d3.scaleOrdinal(d3.schemeCategory10);
+      
+      // Parse the date/time
+      var parseDate = d3.timeParse("%Y-%m-%d");
+      
+      // Set the ranges for the x and y axes
+      var x = d3.scaleTime().range([0, width]);
+      var y = d3.scaleLinear().range([height, 0]);
+      
+      // Define the line function
+      var line = d3.line()
+          .x(function(d) { return x(d.date); })
+          .y(function(d) { return y(d.price); });
+          
+      // Add the SVG canvas
+      var svg = d3.select("#chart")
+          .append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+              
+      // Load the data
+    //   d3.csv("group_calendar.csv", function(error, data) {
+    //     if (error) {
+    //         console.log('error');
+    //         throw error};
+        
+       d3.csv("group_calendar.csv", function(d) {
+        return {
+            neighbourhood: d.neighbourhood,
+            date: parseDate(d.date),
+            price: +d.price // convert the price string to a number
+        };
+
+        }).then(function(data) {
+        // Format the data
+        data.forEach(function(d) {
+          d.date = parseDate(d.date);
+          d.price = +d.price;
+        });
+        
+        // Nest the data by neighborhood
+        var nestedData = d3.nest()
+          .key(function(d) { return d.neighbourhood; })
+          .entries(data);
+          
+        // Set the domains for the x and y axes
+        x.domain(d3.extent(data, function(d) { return d.date; }));
+        y.domain([0, d3.max(data, function(d) { return d.price; })]);
+        
+        // Add the x axis
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
+        
+        // Add the y axis
+        svg.append("g")
+            .call(d3.axisLeft(y));
+        
+        // Add the line paths for each neighborhood
+        svg.selectAll(".line")
+            .data(nestedData)
+            .enter().append("path")
+            .attr("class", "line")
+            .attr("d", function(d) { return line(d.values); })
+            .style("stroke", function(d) { return colors(d.key); })
+            .style("fill", "none")
+            .style("stroke-width", 2)
+            .style("opacity", 0);
+        
+        // Animate the lines
+        svg.selectAll(".line")
+            .transition()
+            .duration(2000)
+            .delay(function(d, i) { return i * 500; })
+            .style("opacity", 1);
+            
+      });
+      
+    </script>
+  </body>
+</html>
