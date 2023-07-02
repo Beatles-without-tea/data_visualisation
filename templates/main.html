@@ -1,15 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Website</title>
+    <title>AirBnb in Paris</title>
+
+    <style>
+    .container {
+    display: flex;
+    }
+
+    .left {
+    flex: 1;
+    }
+
+    .right {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .main_text {
+        text-align: center;
+    }
+
+
+    </style>
+    
 </head>
 <body>
-    <h1>Airbnb Prices in Paris</h1>
     
+    <div class="container">
+
+        <!-- left column of the page -->
+        <div class="left">
+        <iframe src="{{ url_for('show_map') }}" style="width:50%; height: 1000px; position: fixed; left: 0; top:0; border: none;" ></iframe>
+        <p>Other content goes here.</p>
+            
+        </div>
+
+        <!-- right column of the page -->
+        <div class="right">
+            <div class = "main_text">
+                <h1 style=" font-family: Arial, sans-serif;">How much does it cost to rent an Airbnb in Paris?</h1>
+                <p style=" font-family: Arial, sans-serif;"> Paris is one of the most visited cities in the world, 
+                    known for its rich history, stunning architecture, and 
+                    romantic atmosphere. However, with its popularity comes a 
+                    high price tag, making it one of Europe's most expensive destinations. 
+                    For budget-conscious travelers, finding affordable accommodation is key. 
+                    In this data analysis, we explore the most affordable areas to rent an Airbnb 
+                    in the city, providing insights into where travelers can save money without 
+                    sacrificing the Parisian experience</p>
+                <img width="100%" left="10px" src="{{url_for('static', filename='numberListed.png')}}"/>
+                
+            </div>
+
+        </div>
+
+      </div>
     <div>
-        <iframe src="{{ url_for('show_map') }}" style="width:50%; height: 500px; position: fixed; left: 0; top:0; border: none;" ></iframe>
     </div>
 
-    <p>Other content goes here.</p>
 </body>
 </html>

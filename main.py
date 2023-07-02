@@ -8,6 +8,7 @@ app = Flask(__name__)
 def show_map():
     return render_template('map.html')
 
+
 @app.route('/')
 def index():
     # Render the map HTML file
