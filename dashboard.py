@@ -64,7 +64,7 @@ with st.sidebar:
 #     st.success("Done!")
 
     dropdown_choice = st.selectbox( 'Select an option' ,
-    ('Home','Average price by night','Room availability','Bookings','Reviews','other')
+    ('Home','Average price by night','Room availability','Bookings','Reviews','View some airbnbs')
     )
 
     if dropdown_choice == 'Home':
@@ -77,6 +77,11 @@ with st.sidebar:
                     In this data analysis, we explore the most affordable areas to rent an Airbnb 
                     in the city, providing insights into where travelers can save money without 
                     sacrificing the Parisian experience""")
+    elif dropdown_choice == 'View some airbnbs':
+         st.sidebar.info("""
+         You now know everything there is to know about airbnbs in Paris. 
+         How about looking at some places?
+         """)
 
     elif dropdown_choice == 'Average price by night': 
         st.sidebar.info(
@@ -89,8 +94,28 @@ with st.sidebar:
              restaurants, shopping districts, and excellent public transportation 
              links.
             In contrast, arrondissements on the outskirts of Paris, such as the 19th 
-            and 20th, usually have more affordable Airbnb prices.""")
+            and 20th, usually have more affordable Airbnb prices""")
 
+    elif dropdown_choice == 'Bookings':
+       st.sidebar.info( """
+        Traditionally, 
+         the highest demand for Airbnb accommodations tends to coincide with the
+          peak tourist season in Paris, 
+        which spans from late spring through the end of summer.
+
+        Additionally, there's also an increase in Airbnb activity during the winter
+         holiday season, specifically around Christmas and New Year's when Paris is
+          known for its festive illuminations and seasonal events.
+
+        Conversely, during the off-peak periods, particularly in late autumn and early 
+        winter, the demand for Airbnb accommodation in 
+        Paris usually declines. This decrease in tourism activity can result in lower
+         prices and increased availability for Airbnb listings.
+        """)
+    elif dropdown_choice == 'Room availability':
+        booking_choice = st.selectbox( 'Choose a graph' ,
+        ("Bookings per district","Booking availability")
+        )
     elif dropdown_choice == 'Reviews':
     
     #     review_location_choice = st.selectbox( 'Choose an area' ,
@@ -106,12 +131,27 @@ with st.sidebar:
 
         if review_type_choice == 'Rating':
             st.sidebar.info("""Depending on what is important to your trip, 
-            whether thats cleanliness, location, or communication, different arrondissements
+            whether that is cleanliness, location, or communication, different arrondissements
             have different strengths and weakness. Select a review category from the options above
             to learn more""")
             st.sidebar.info("""The map to the right shows the median review for each arrondissement""")
 
+        elif review_type_choice == 'Cleanliness':
+             st.sidebar.info("""
+            Some arrondissements may have more professional hosts who use 
+            cleaning services to ensure their properties are immaculate before every 
+            guest's arrival. On the other hand, hosts in other districts may manage 
+            the cleaning process themselves.
 
+            The type and age of buildings across arrondissements can also 
+            impact cleanliness ratings. Central arrondissements, such as the 1st or 
+            4th, are known for their historic and often older buildings. Despite their
+             charm and appeal, these older buildings may present more challenges to
+              maintain at a high standard of cleanliness due to their age and 
+              architectural features. In contrast, newer buildings, which are more
+              common in certain outer arrondissements, could be easier to keep clean
+               and well-maintained
+             """)
         elif ((review_type_choice == 'Location') or (review_type_choice == 'Value')):
             st.sidebar.info(
                 """Some arrondissements, such as the 1st (Louvre) or the 4th (Marais), 
@@ -130,6 +170,7 @@ with st.sidebar:
                 these peripheral arrondissements provide an authentic experience of everyday
                 Parisian
                 life, away from the tourist crowds.""")
+   
 
 review_mapper = {'Rating':"review_scores_rating",
                 'Cleanliness':"review_scores_cleanliness",
@@ -169,8 +210,10 @@ elif dropdown_choice == 'Home':
        st.image("images/paris-airbnb.jpeg")
 
 elif dropdown_choice == 'Room availability':
-    st.image("images/density_neighbourhood.png")
-    st.image("images/availability_neighbourhood.png")
+    if booking_choice == "Bookings per district" :
+        st.image("images/density_neighbourhood.png")
+    elif booking_choice=="Booking availability": 
+        st.image("images/availability_neighbourhood.png")
 
 elif dropdown_choice == 'Bookings':
     st.image("images/bookings_over_time.png")
@@ -203,3 +246,11 @@ elif dropdown_choice == 'Reviews':
 
     # Display the map
     folium_static(m, width=1200, height=800)
+
+elif dropdown_choice == 'View some airbnbs':
+    path_to_html = "Paris_Airbnb.html" 
+    # Read file and keep in variable
+    with open(path_to_html,'r') as f: 
+        html_data = f.read()
+    ## Show in webpage
+    st.components.v1.html(html_data,height=1200)
